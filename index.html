@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1F4D2C">
+
+  <meta name="description"
+      content="Free farm calculators for African farmers: fertilizer calculator, plant population calculator, crop spacing calculator and farm profit calculator. Fast, mobile-friendly, no signup needed.">
+
+  <title>Farmer Tools | AgriBase</title>
+
+  <link rel="icon" type="image/png" href="../favicon-256.png">
+  <link rel="apple-touch-icon" href="../favicon-256.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,600&family=Karla:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <meta name="google-adsense-account" content="ca-pub-2606126305565597">
+  <script async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2606126305565597"
+          crossorigin="anonymous"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "AgriBase Farmer Tools",
+    "description": "Free farm calculators: fertilizer, plant population, crop spacing and farm profit calculators for African farmers.",
+    "author": { "@type": "Person", "name": "Enock Chinatsvi", "url": "https://github.com/Chinatsvi" },
+    "publisher": { "@type": "Organization", "name": "AgriBase" },
+    "mainEntityOfPage": "https://chinatsvi.github.io/tools/"
+  }
+  </script>
+
+  <style>
+    :root {
+      --soil: #A63A1F;
+      --soil-dark: #7A2A16;
+      --field: #1F4D2C;
+      --field-dark: #163A20;
+      --field-mid: #2E6B3E;
+      --gold: #E3A72E;
+      --gold-dark: #C4881B;
+      --cream: #FBF3E6;
+      --paper: #F3E7D2;
+      --ink: #2A2620;
+      --muted: #6E6152;
+      --border: #E4D3B8;
+      --field-tint: #E3EEE4;
+      --soil-tint: #F3E0D6;
+      --gold-tint: #FBEBC8;
+      --ink-tint: #ECE6DA;
+      --shadow: 0 18px 46px rgba(42,38,32,.16);
+      --shadow-sm: 0 8px 22px rgba(42,38,32,.10);
+      --font-display: "Fraunces", Georgia, serif;
+      --font-body: "Karla", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--ink);
+      background: var(--cream);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ===== Nav ===== */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: linear-gradient(90deg, var(--field-dark), var(--field));
+      color: var(--cream);
+      box-shadow: 0 3px 18px rgba(0,0,0,.18);
+    }
+
+    .nav-inner {
+      width: min(1160px, calc(100% - 40px));
+      margin: auto;
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 21px;
+    }
+
+    .brand-icon {
+      flex: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--cream);
+      color: var(--field);
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,.35);
+    }
+
+    .brand-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-links a { text-decoration: none; opacity: .92; }
+    .nav-links a:hover { opacity: 1; }
+
+    /* ===== Page header ===== */
+    .page-hero {
+      position: relative;
+      background:
+        repeating-linear-gradient(115deg, rgba(255,255,255,.05) 0 2px, transparent 2px 26px),
+        linear-gradient(160deg, var(--field-dark) 0%, var(--field) 55%, var(--field-mid) 100%);
+      color: var(--cream);
+      overflow: hidden;
+      padding: 56px 20px 72px;
+    }
+
+    .page-hero-inner {
+      position: relative;
+      z-index: 1;
+      width: min(880px, calc(100% - 40px));
+      margin: auto;
+    }
+
+    .breadcrumb {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      opacity: .78;
+      margin-bottom: 18px;
+    }
+
+    .breadcrumb a { text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .page-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 14px 7px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.3);
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .page-hero h1 {
+      margin: 0 0 16px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(30px, 4.4vw, 46px);
+      line-height: 1.1;
+      letter-spacing: -.8px;
+    }
+
+    .page-hero p.lead {
+      max-width: 620px;
+      margin: 0;
+      font-size: clamp(15px, 1.7vw, 17px);
+      color: rgba(251,243,230,.92);
+    }
+
+    .page-hero-divider {
+      position: absolute;
+      left: 0; right: 0; bottom: -1px;
+      width: 100%; height: 40px;
+    }
+
+    /* ===== Ad slot ===== */
+    .ad-slot-wrap { background: var(--cream); padding: 0 20px; }
+    .ad-slot {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto 10px;
+      padding: 14px;
+      text-align: center;
+      overflow: hidden;
+      min-height: 90px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+    }
+    .ad-slot .label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    /* ===== Tool index (jump nav) ===== */
+    .tool-index-wrap { padding: 46px 20px 10px; }
+    .tool-index {
+      width: min(900px, 100%);
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .tool-index a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+      text-decoration: none;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--field);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .tool-index a:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+    .tool-index span.emoji { font-size: 24px; }
+
+    /* ===== Calculator sections ===== */
+    .calc-section { padding: 50px 20px; }
+    .calc-wrap { width: min(720px, 100%); margin: auto; }
+
+    .calc-card {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow-sm);
+      scroll-margin-top: 90px;
+    }
+
+    .calc-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .calc-icon {
+      flex: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      background: var(--field-tint);
+      border: 2px solid rgba(31,77,44,.25);
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+    }
+
+    .calc-card h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      color: var(--field);
+      font-weight: 700;
+      font-size: clamp(20px, 2.6vw, 24px);
+      letter-spacing: -.3px;
+    }
+
+    .calc-desc {
+      color: var(--muted);
+      font-size: 14.5px;
+      margin: 0 0 24px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--field);
+    }
+
+    .field input, .field select {
+      font-family: var(--font-body);
+      font-size: 15px;
+      padding: 11px 12px;
+      border-radius: 9px;
+      border: 1.5px solid var(--border);
+      background: var(--cream);
+      color: var(--ink);
+    }
+
+    .field input:focus, .field select:focus {
+      outline: none;
+      border-color: var(--field-mid);
+    }
+
+    .calc-button {
+      margin-top: 8px;
+      width: 100%;
+      padding: 14px 22px;
+      border-radius: 11px;
+      border: none;
+      background: var(--gold);
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background .2s ease, transform .2s ease;
+    }
+
+    .calc-button:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+    .calc-result {
+      display: none;
+      margin-top: 20px;
+      background: var(--cream);
+      border: 1px dashed var(--soil);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+
+    .calc-result.show { display: block; }
+
+    .calc-result .result-label {
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: 11px;
+      color: var(--soil);
+      margin: 0 0 6px;
+    }
+
+    .calc-result .result-value {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 700;
+      color: var(--field);
+      margin: 0 0 4px;
+    }
+
+    .calc-result .result-sub {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .calc-note {
+      margin-top: 18px;
+      font-size: 12.5px;
+      color: var(--muted);
+      border-top: 1px dashed var(--border);
+      padding-top: 14px;
+    }
+
+    /* ===== Coming soon ===== */
+    .coming-soon { background: var(--paper); padding: 60px 20px; }
+    .coming-soon-inner { width: min(1000px, 100%); margin: auto; }
+
+    .section-title {
+      text-align: center;
+      margin: 0 0 10px;
+      color: var(--field);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(24px, 3vw, 30px);
+      letter-spacing: -.5px;
+    }
+
+    .section-intro {
+      max-width: 560px;
+      margin: 0 auto 36px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .soon-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .soon-card {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+      opacity: .75;
+    }
+
+    .soon-card .emoji { font-size: 26px; margin-bottom: 8px; display: block; }
+    .soon-card .name { font-weight: 700; font-size: 13.5px; color: var(--field); margin-bottom: 6px; }
+    .soon-card .badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: var(--gold-tint);
+      color: var(--gold-dark);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    /* ===== CTA ===== */
+    .cta { background: var(--cream); text-align: center; padding: 90px 20px; }
+    .cta-frame {
+      max-width: 640px;
+      margin: 0 auto;
+      border: 2px dashed var(--field);
+      border-radius: 20px;
+      padding: 48px 36px;
+    }
+    .cta h2 {
+      color: var(--field);
+      font-family: var(--font-display);
+      font-weight: 700;
+      margin: 6px 0 14px;
+      font-size: clamp(24px, 3.2vw, 32px);
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 26px;
+      border-radius: 11px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 15px;
+      background: var(--gold);
+      color: var(--ink);
+      box-shadow: var(--shadow-sm);
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+      margin-top: 8px;
+    }
+    .button:hover { background: var(--gold-dark); transform: translateY(-2px); box-shadow: var(--shadow); }
+
+    /* ===== Footer ===== */
+    footer {
+      position: relative;
+      background: linear-gradient(180deg, #1E2B18, #141F11);
+      color: rgba(251,243,230,.88);
+      padding: 60px 20px 30px;
+    }
+    .footer-top-edge { position: absolute; top: -1px; left: 0; right: 0; width: 100%; height: 40px; }
+    .footer-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+    .footer-brand .brand-icon { width: 36px; height: 36px; }
+    .footer-tagline { font-size: 13px; opacity: .75; margin-top: 3px; font-family: var(--font-mono); }
+    .footer-links { display: flex; gap: 20px; font-size: 13px; flex-wrap: wrap; }
+    .footer-links a { text-decoration: none; opacity: .85; }
+    .footer-links a:hover { opacity: 1; }
+    .footer-bottom {
+      width: min(1120px, calc(100% - 40px));
+      margin: 30px auto 0;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255,255,255,.12);
+      text-align: center;
+      font-size: 12.5px;
+      opacity: .65;
+      font-family: var(--font-mono);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 720px) {
+      .tool-index { grid-template-columns: 1fr 1fr; }
+      .soon-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .field-row { grid-template-columns: 1fr; }
+      .calc-card { padding: 26px 20px; }
+      .page-hero { padding: 44px 18px 56px; }
+      .footer-inner { justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../farmers-community/">
+        <span class="brand-icon"><img src="../favicon-256.png" alt="AgriBase icon"></span>
+        <span>AgriBase</span>
+      </a>
+      <div class="nav-links">
+        <a href="../farmers-community/#features">Guides</a>
+        <a href="../farmer-community-Help-FAQ/">Help</a>
+        <a href="../farmer-community-contact-us/">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page hero -->
+  <header class="page-hero">
+    <div class="page-hero-inner">
+      <div class="breadcrumb"><a href="../farmers-community/">AgriBase</a> / Farmer Tools</div>
+      <span class="page-hero-badge">🧮 Free Farm Calculators</span>
+      <h1>AgriBase Farmer Tools</h1>
+      <p class="lead">
+        Quick, free calculators for everyday farm decisions — how much
+        fertilizer to buy, how many plants to order, how to space your rows,
+        and whether this season will turn a profit. No signup, works on any phone.
+      </p>
+    </div>
+    <svg class="page-hero-divider" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#FBF3E6" d="M0,6 L40,22 L80,3 L120,30 L160,10 L200,34 L240,4 L280,26 L320,14 L360,32 L400,2 L440,20 L480,36 L520,8 L560,24 L600,12 L640,30 L680,4 L720,18 L760,34 L800,6 L840,28 L880,2 L920,22 L960,32 L1000,10 L1040,26 L1080,4 L1120,20 L1160,34 L1200,8 L1200,40 L0,40 Z"></path>
+    </svg>
+  </header>
+
+  <!-- ================= GOOGLE ADSENSE AD ================= -->
+  <div class="ad-slot-wrap">
+    <div class="ad-slot">
+      <span class="label">Advertisement</span>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-2606126305565597"
+           data-ad-slot="7638324548"
+           data-ad-format="horizontal"
+           data-full-width-responsive="false"></ins>
+    </div>
+  </div>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  <!-- ===================================================== -->
+
+  <!-- Quick jump nav -->
+  <div class="tool-index-wrap">
+    <div class="tool-index">
+      <a href="#fertilizer"><span class="emoji">🧪</span>Fertilizer</a>
+      <a href="#plant-population"><span class="emoji">🌽</span>Plant Population</a>
+      <a href="#crop-spacing"><span class="emoji">📏</span>Crop Spacing</a>
+      <a href="#farm-profit"><span class="emoji">💰</span>Farm Profit</a>
+    </div>
+  </div>
+
+  <!-- Fertilizer Calculator -->
+  <section class="calc-section">
+    <div class="calc-wrap">
+      <div class="calc-card" id="fertilizer">
+        <div class="calc-head">
+          <div class="calc-icon">🧪</div>
+          <h2>Fertilizer Calculator</h2>
+        </div>
+        <p class="calc-desc">Work out how much fertilizer to buy based on your field size and the recommended application rate.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="fert-size">Field size</label>
+            <input type="number" id="fert-size" placeholder="e.g. 2" min="0" step="any">
+          </div>
+          <div class="field">
+            <label for="fert-unit">Unit</label>
+            <select id="fert-unit">
+              <option value="ha">Hectares</option>
+              <option value="acre">Acres</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="fert-rate">Application rate (kg per hectare)</label>
+            <input type="number" id="fert-rate" placeholder="e.g. 300" min="0" step="any">
+          </div>
+          <div class="field">
+            <label for="fert-bag">Bag size (kg, optional)</label>
+            <input type="number" id="fert-bag" placeholder="e.g. 50" min="0" step="any">
+          </div>
+        </div>
+
+        <button class="calc-button" onclick="calcFertilizer()">Calculate fertilizer needed</button>
+
+        <div class="calc-result" id="fert-result">
+          <p class="result-label">You need</p>
+          <p class="result-value" id="fert-value">—</p>
+          <p class="result-sub" id="fert-sub"></p>
+        </div>
+
+        <p class="calc-note">Application rates vary by crop, soil test results and fertilizer type — check your local extension recommendation for the exact rate to enter.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Plant Population Calculator -->
+  <section class="calc-section" style="padding-top:0;">
+    <div class="calc-wrap">
+      <div class="calc-card" id="plant-population">
+        <div class="calc-head">
+          <div class="calc-icon">🌽</div>
+          <h2>Plant Population Calculator</h2>
+        </div>
+        <p class="calc-desc">Find out how many plants (or how much seed) you need for your field, based on row and plant spacing.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="pop-size">Field size</label>
+            <input type="number" id="pop-size" placeholder="e.g. 1" min="0" step="any">
+          </div>
+          <div class="field">
+            <label for="pop-unit">Unit</label>
+            <select id="pop-unit">
+              <option value="ha">Hectares</option>
+              <option value="acre">Acres</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="pop-row">Row spacing (cm)</label>
+            <input type="number" id="pop-row" placeholder="e.g. 75" min="0" step="any">
+          </div>
+          <div class="field">
+            <label for="pop-plant">Plant spacing (cm)</label>
+            <input type="number" id="pop-plant" placeholder="e.g. 25" min="0" step="any">
+          </div>
+        </div>
+
+        <button class="calc-button" onclick="calcPopulation()">Calculate plant population</button>
+
+        <div class="calc-result" id="pop-result">
+          <p class="result-label">You need</p>
+          <p class="result-value" id="pop-value">—</p>
+          <p class="result-sub" id="pop-sub"></p>
+        </div>
+
+        <p class="calc-note">This gives a theoretical maximum population — actual germination rate and thinning will reduce your final stand count somewhat.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GOOGLE ADSENSE AD ================= -->
+  <div class="ad-slot-wrap">
+    <div class="ad-slot">
+      <span class="label">Advertisement</span>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-2606126305565597"
+           data-ad-slot="7638324548"
+           data-ad-format="horizontal"
+           data-full-width-responsive="false"></ins>
+    </div>
+  </div>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  <!-- ===================================================== -->
+
+  <!-- Crop Spacing Calculator -->
+  <section class="calc-section">
+    <div class="calc-wrap">
+      <div class="calc-card" id="crop-spacing">
+        <div class="calc-head">
+          <div class="calc-icon">📏</div>
+          <h2>Crop Spacing Calculator</h2>
+        </div>
+        <p class="calc-desc">Pick a crop for typical recommended spacing, or enter your own — see the resulting plant density per hectare and per acre.</p>
+
+        <div class="field-row">
+          <div class="field" style="grid-column: 1 / -1;">
+            <label for="spacing-crop">Crop</label>
+            <select id="spacing-crop" onchange="applyCropPreset()">
+              <option value="custom">Custom (enter your own below)</option>
+              <option value="maize" data-row="75" data-plant="25">Maize</option>
+              <option value="beans" data-row="50" data-plant="10">Beans</option>
+              <option value="groundnuts" data-row="45" data-plant="15">Groundnuts</option>
+              <option value="soybean" data-row="45" data-plant="5">Soybean</option>
+              <option value="sorghum" data-row="75" data-plant="20">Sorghum</option>
+              <option value="tomato" data-row="90" data-plant="45">Tomato</option>
+              <option value="cabbage" data-row="60" data-plant="45">Cabbage</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="spacing-row">Row spacing (cm)</label>
+            <input type="number" id="spacing-row" placeholder="e.g. 75" min="0" step="any">
+          </div>
+          <div class="field">
+            <label for="spacing-plant">Plant spacing (cm)</label>
+            <input type="number" id="spacing-plant" placeholder="e.g. 25" min="0" step="any">
+          </div>
+        </div>
+
+        <button class="calc-button" onclick="calcSpacing()">Calculate density</button>
+
+        <div class="calc-result" id="spacing-result">
+          <p class="result-label">Plant density</p>
+          <p class="result-value" id="spacing-value">—</p>
+          <p class="result-sub" id="spacing-sub"></p>
+        </div>
+
+        <p class="calc-note">Presets are general starting points — adjust for your specific variety, soil fertility and local recommendations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Farm Profit Calculator -->
+  <section class="calc-section" style="padding-top:0;">
+    <div class="calc-wrap">
+      <div class="calc-card" id="farm-profit">
+        <div class="calc-head">
+          <div class="calc-icon">💰</div>
+          <h2>Farm Profit Calculator</h2>
+        </div>
+        <p class="calc-desc">Estimate your revenue, total costs and profit for a season, plus your profit margin.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="profit-yield">Expected yield (units)</label>
+            <input type="number" id="profit-yield" placeholder="e.g. 4000" min="0" step="any">
+          </div>
+          <div class="field">
+            <label for="profit-price">Price per unit</label>
+            <input type="number" id="profit-price" placeholder="e.g. 0.35" min="0" step="any">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field" style="grid-column: 1 / -1;">
+            <label for="profit-costs">Total production costs</label>
+            <input type="number" id="profit-costs" placeholder="e.g. 900" min="0" step="any">
+          </div>
+        </div>
+
+        <button class="calc-button" onclick="calcProfit()">Calculate profit</button>
+
+        <div class="calc-result" id="profit-result">
+          <p class="result-label">Estimated profit</p>
+          <p class="result-value" id="profit-value">—</p>
+          <p class="result-sub" id="profit-sub"></p>
+        </div>
+
+        <p class="calc-note">Use consistent units throughout (e.g. all in kilograms, or all in bags) — the calculator doesn't convert between units for you.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coming soon -->
+  <section class="coming-soon">
+    <div class="coming-soon-inner">
+      <h2 class="section-title">More Tools Coming Soon</h2>
+      <p class="section-intro">We're building these next — check back, or download the app to get notified when they launch.</p>
+      <div class="soon-grid">
+        <div class="soon-card">
+          <span class="emoji">📒</span>
+          <div class="name">Farm Budget Calculator</div>
+          <span class="badge">Phase 2</span>
+        </div>
+        <div class="soon-card">
+          <span class="emoji">📉</span>
+          <div class="name">Break-Even Calculator</div>
+          <span class="badge">Phase 2</span>
+        </div>
+        <div class="soon-card">
+          <span class="emoji">🐔</span>
+          <div class="name">Feed Calculator</div>
+          <span class="badge">Phase 2</span>
+        </div>
+        <div class="soon-card">
+          <span class="emoji">🐄</span>
+          <div class="name">Livestock Feed Calculator</div>
+          <span class="badge">Phase 2</span>
+        </div>
+        <div class="soon-card">
+          <span class="emoji">💧</span>
+          <div class="name">Irrigation Calculator</div>
+          <span class="badge">Phase 3</span>
+        </div>
+        <div class="soon-card">
+          <span class="emoji">📥</span>
+          <div class="name">Farm Record Templates</div>
+          <span class="badge">Phase 3</span>
+        </div>
+        <div class="soon-card">
+          <span class="emoji">📊</span>
+          <div class="name">Advanced Farm Tools</div>
+          <span class="badge">Phase 3</span>
+        </div>
+        <div class="soon-card">
+          <span class="emoji">📘</span>
+          <div class="name">Premium Guides</div>
+          <span class="badge">Phase 3</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta-frame">
+      <span class="eyebrow" style="color:var(--soil); display:block; text-align:center; margin-bottom:12px;">Want more?</span>
+      <h2>Get Farming Tools On Your Phone</h2>
+      <p class="section-intro" style="margin-bottom:0;">
+        Download AgriBase for record keeping, an AI farming assistant,
+        weather info and the full marketplace — all in one place.
+      </p>
+      <a class="button"
+         href="https://www.mediafire.com/file/mg78viqjikkerc1/farmers.v1.0.1.apk/file"
+         target="_blank"
+         rel="noopener noreferrer">
+        📲 Download the App
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <svg class="footer-top-edge" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#1E2B18" d="M0,34 L40,18 L80,37 L120,10 L160,30 L200,6 L240,36 L280,14 L320,26 L360,8 L400,38 L440,20 L480,4 L520,32 L560,16 L600,28 L640,10 L680,36 L720,22 L760,6 L800,34 L840,12 L880,38 L920,18 L960,8 L1000,30 L1040,14 L1080,36 L1120,20 L1160,6 L1200,32 L1200,0 L0,0 Z"></path>
+    </svg>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">
+          <span class="brand-icon"><img src="../favicon-256.png" alt="Farmer Community icon"></span>
+          <span>Farmer Community</span>
+        </div>
+        <div class="footer-tagline">Connect. Learn. Farm Better.</div>
+      </div>
+      <div class="footer-links">
+        <a href="../farmer-community-Help-FAQ/" target="_blank" rel="noopener noreferrer">Help &amp; FAQ</a>
+        <a href="../farmer-community-privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+        <a href="../farmer-community-terms/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+        <a href="../farmer-community-contact-us/" target="_blank" rel="noopener noreferrer">Contact Us</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Farmer Community. All rights reserved.</div>
+  </footer>
+
+  <script>
+    // ---- Unit conversion helpers ----
+    const HA_TO_ACRE = 2.47105;
+    const ACRE_TO_HA = 0.404686;
+
+    function toHectares(value, unit) {
+      return unit === 'acre' ? value * ACRE_TO_HA : value;
+    }
+
+    function formatNumber(n, decimals = 0) {
+      return n.toLocaleString(undefined, { maximumFractionDigits: decimals, minimumFractionDigits: decimals });
+    }
+
+    // ---- Fertilizer Calculator ----
+    function calcFertilizer() {
+      const size = parseFloat(document.getElementById('fert-size').value);
+      const unit = document.getElementById('fert-unit').value;
+      const rate = parseFloat(document.getElementById('fert-rate').value);
+      const bagSize = parseFloat(document.getElementById('fert-bag').value);
+
+      const resultBox = document.getElementById('fert-result');
+      const valueEl = document.getElementById('fert-value');
+      const subEl = document.getElementById('fert-sub');
+
+      if (!size || size <= 0 || !rate || rate <= 0) {
+        valueEl.textContent = 'Please enter a valid field size and rate';
+        subEl.textContent = '';
+        resultBox.classList.add('show');
+        return;
+      }
+
+      const sizeHa = toHectares(size, unit);
+      const totalKg = sizeHa * rate;
+
+      valueEl.textContent = formatNumber(totalKg, 1) + ' kg';
+
+      let sub = `Based on ${formatNumber(sizeHa, 2)} ha at ${formatNumber(rate, 0)} kg/ha.`;
+      if (bagSize && bagSize > 0) {
+        const bags = totalKg / bagSize;
+        sub += ` That's about ${formatNumber(bags, 1)} bags of ${formatNumber(bagSize, 0)} kg.`;
+      }
+      subEl.textContent = sub;
+
+      resultBox.classList.add('show');
+    }
+
+    // ---- Plant Population Calculator ----
+    function calcPopulation() {
+      const size = parseFloat(document.getElementById('pop-size').value);
+      const unit = document.getElementById('pop-unit').value;
+      const rowCm = parseFloat(document.getElementById('pop-row').value);
+      const plantCm = parseFloat(document.getElementById('pop-plant').value);
+
+      const resultBox = document.getElementById('pop-result');
+      const valueEl = document.getElementById('pop-value');
+      const subEl = document.getElementById('pop-sub');
+
+      if (!size || size <= 0 || !rowCm || rowCm <= 0 || !plantCm || plantCm <= 0) {
+        valueEl.textContent = 'Please fill in all fields with valid numbers';
+        subEl.textContent = '';
+        resultBox.classList.add('show');
+        return;
+      }
+
+      const sizeHa = toHectares(size, unit);
+      const areaM2 = sizeHa * 10000;
+      const rowM = rowCm / 100;
+      const plantM = plantCm / 100;
+      const plantsPerM2 = 1 / (rowM * plantM);
+      const totalPlants = areaM2 * plantsPerM2;
+
+      valueEl.textContent = formatNumber(totalPlants, 0) + ' plants';
+      subEl.textContent = `About ${formatNumber(plantsPerM2 * 10000, 0)} plants/ha, for a ${formatNumber(sizeHa, 2)} ha field.`;
+
+      resultBox.classList.add('show');
+    }
+
+    // ---- Crop Spacing Calculator ----
+    function applyCropPreset() {
+      const select = document.getElementById('spacing-crop');
+      const option = select.options[select.selectedIndex];
+      const row = option.getAttribute('data-row');
+      const plant = option.getAttribute('data-plant');
+      if (row && plant) {
+        document.getElementById('spacing-row').value = row;
+        document.getElementById('spacing-plant').value = plant;
+      }
+    }
+
+    function calcSpacing() {
+      const rowCm = parseFloat(document.getElementById('spacing-row').value);
+      const plantCm = parseFloat(document.getElementById('spacing-plant').value);
+
+      const resultBox = document.getElementById('spacing-result');
+      const valueEl = document.getElementById('spacing-value');
+      const subEl = document.getElementById('spacing-sub');
+
+      if (!rowCm || rowCm <= 0 || !plantCm || plantCm <= 0) {
+        valueEl.textContent = 'Please enter valid row and plant spacing';
+        subEl.textContent = '';
+        resultBox.classList.add('show');
+        return;
+      }
+
+      const rowM = rowCm / 100;
+      const plantM = plantCm / 100;
+      const perHa = (1 / (rowM * plantM)) * 10000;
+      const perAcre = perHa * ACRE_TO_HA;
+
+      valueEl.textContent = formatNumber(perHa, 0) + ' plants/ha';
+      subEl.textContent = `About ${formatNumber(perAcre, 0)} plants per acre, at ${rowCm}cm x ${plantCm}cm spacing.`;
+
+      resultBox.classList.add('show');
+    }
+
+    // ---- Farm Profit Calculator ----
+    function calcProfit() {
+      const yieldUnits = parseFloat(document.getElementById('profit-yield').value);
+      const price = parseFloat(document.getElementById('profit-price').value);
+      const costs = parseFloat(document.getElementById('profit-costs').value);
+
+      const resultBox = document.getElementById('profit-result');
+      const valueEl = document.getElementById('profit-value');
+      const subEl = document.getElementById('profit-sub');
+      const labelEl = resultBox.querySelector('.result-label');
+
+      if (!yieldUnits || yieldUnits <= 0 || !price || price <= 0 || costs === undefined || isNaN(costs) || costs < 0) {
+        valueEl.textContent = 'Please fill in all fields with valid numbers';
+        subEl.textContent = '';
+        resultBox.classList.add('show');
+        return;
+      }
+
+      const revenue = yieldUnits * price;
+      const profit = revenue - costs;
+      const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
+
+      labelEl.textContent = profit >= 0 ? 'Estimated profit' : 'Estimated loss';
+      valueEl.textContent = (profit >= 0 ? '' : '-') + formatNumber(Math.abs(profit), 2);
+      subEl.textContent = `Revenue: ${formatNumber(revenue, 2)} · Costs: ${formatNumber(costs, 2)} · Margin: ${formatNumber(margin, 1)}%`;
+
+      resultBox.classList.add('show');
+    }
+  </script>
+
+</body>
+</html>
