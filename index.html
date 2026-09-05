@@ -10,8 +10,8 @@
 
   <title>Farmer Tools | AgriBase</title>
 
-  <link rel="icon" type="image/png" href="../favicon-256.png">
-  <link rel="apple-touch-icon" href="../favicon-256.png">
+  <link rel="icon" type="image/png" href="/favicon-256.png">
+  <link rel="apple-touch-icon" href="/favicon-256.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -91,6 +91,7 @@
     }
 
     .nav-inner {
+      position: relative;
       width: min(1160px, calc(100% - 40px));
       margin: auto;
       min-height: 72px;
@@ -135,6 +136,9 @@
 
     .nav-links a { text-decoration: none; opacity: .92; }
     .nav-links a:hover { opacity: 1; }
+
+    .nav-toggle-input { display: none; }
+    .nav-toggle { display: none; cursor: pointer; }
 
     /* ===== Page header ===== */
     .page-hero {
@@ -512,6 +516,46 @@
       .soon-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 560px) {
+      .nav-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        background: linear-gradient(180deg, var(--field-dark), var(--field));
+        padding: 18px 20px 22px;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        transform: translateY(-8px);
+        pointer-events: none;
+        transition: opacity .25s ease, transform .25s ease;
+      }
+      .nav-toggle-input:checked ~ .nav-links {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      .nav-toggle {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 30px;
+        height: 30px;
+      }
+      .nav-toggle span {
+        display: block;
+        height: 2px;
+        background: var(--cream);
+        border-radius: 2px;
+        transition: transform .25s ease, opacity .25s ease;
+      }
+      .nav-toggle-input:checked ~ .nav-toggle span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+      .nav-toggle-input:checked ~ .nav-toggle span:nth-child(2){ opacity: 0; }
+      .nav-toggle-input:checked ~ .nav-toggle span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+
       .field-row { grid-template-columns: 1fr; }
       .calc-card { padding: 26px 20px; }
       .page-hero { padding: 44px 18px 56px; }
@@ -524,14 +568,24 @@
   <!-- Navigation -->
   <nav class="nav">
     <div class="nav-inner">
-      <a class="brand" href="../farmers-community/">
-        <span class="brand-icon"><img src="../favicon-256.png" alt="AgriBase icon"></span>
+      <a class="brand" href="/farmers-community/">
+        <span class="brand-icon"><img src="/favicon-256.png" alt="AgriBase icon"></span>
         <span>AgriBase</span>
       </a>
+
+      <input type="checkbox" id="navToggle" class="nav-toggle-input">
+      <label for="navToggle" class="nav-toggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </label>
+
       <div class="nav-links">
-        <a href="../farmers-community/#features">Guides</a>
-        <a href="../farmer-community-Help-FAQ/">Help</a>
-        <a href="../farmer-community-contact-us/">Contact</a>
+        <a href="/farmers-community/">🏠 Home</a>
+        <a href="/planting/">🌱 Planting</a>
+        <a href="/weather/">🌦️ Weather</a>
+        <a href="/pests/">🐛 Pests</a>
+        <a href="/tools/">🧮 Calculators</a>
+        <a href="/market/">💰 Market</a>
+        <a href="/farmers-community/#features">📚 Knowledge</a>
       </div>
     </div>
   </nav>
@@ -539,7 +593,7 @@
   <!-- Page hero -->
   <header class="page-hero">
     <div class="page-hero-inner">
-      <div class="breadcrumb"><a href="../farmers-community/">AgriBase</a> / Farmer Tools</div>
+      <div class="breadcrumb"><a href="/farmers-community/">AgriBase</a> / Farmer Tools</div>
       <span class="page-hero-badge">🧮 Free Farm Calculators</span>
       <h1>AgriBase Farmer Tools</h1>
       <p class="lead">
@@ -856,16 +910,16 @@
     <div class="footer-inner">
       <div>
         <div class="footer-brand">
-          <span class="brand-icon"><img src="../favicon-256.png" alt="Farmer Community icon"></span>
+          <span class="brand-icon"><img src="/favicon-256.png" alt="Farmer Community icon"></span>
           <span>Farmer Community</span>
         </div>
         <div class="footer-tagline">Connect. Learn. Farm Better.</div>
       </div>
       <div class="footer-links">
-        <a href="../farmer-community-Help-FAQ/" target="_blank" rel="noopener noreferrer">Help &amp; FAQ</a>
-        <a href="../farmer-community-privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-        <a href="../farmer-community-terms/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
-        <a href="../farmer-community-contact-us/" target="_blank" rel="noopener noreferrer">Contact Us</a>
+        <a href="/farmer-community-Help-FAQ/" target="_blank" rel="noopener noreferrer">Help &amp; FAQ</a>
+        <a href="/farmer-community-privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+        <a href="/farmer-community-terms/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+        <a href="/farmer-community-contact-us/" target="_blank" rel="noopener noreferrer">Contact Us</a>
       </div>
     </div>
     <div class="footer-bottom">© 2026 Farmer Community. All rights reserved.</div>
