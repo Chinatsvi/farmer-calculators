@@ -30,7 +30,7 @@
     "description": "Free farm calculators: fertilizer, plant population, crop spacing and farm profit calculators for African farmers.",
     "author": { "@type": "Person", "name": "Enock Chinatsvi", "url": "https://github.com/Chinatsvi" },
     "publisher": { "@type": "Organization", "name": "AgriBase" },
-    "mainEntityOfPage": "https://chinatsvi.github.io/tools/"
+    "mainEntityOfPage": "https://chinatsvi.github.io/farmer-calculators/"
   }
   </script>
 
@@ -80,7 +80,7 @@
       font-weight: 600;
     }
 
-    /* ===== Nav ===== */
+    /* ===== Nav (universal — identical across all AgriBase pages) ===== */
     .nav {
       position: sticky;
       top: 0;
@@ -136,6 +136,7 @@
 
     .nav-links a { text-decoration: none; opacity: .92; }
     .nav-links a:hover { opacity: 1; }
+    .nav-links a.active { opacity: 1; border-bottom: 2px solid var(--gold); padding-bottom: 4px; }
 
     .nav-toggle-input { display: none; }
     .nav-toggle { display: none; cursor: pointer; }
@@ -476,7 +477,7 @@
     }
     .button:hover { background: var(--gold-dark); transform: translateY(-2px); box-shadow: var(--shadow); }
 
-    /* ===== Footer ===== */
+    /* ===== Footer (universal — identical across all AgriBase pages) ===== */
     footer {
       position: relative;
       background: linear-gradient(180deg, #1E2B18, #141F11);
@@ -565,10 +566,10 @@
 </head>
 <body>
 
-  <!-- Navigation -->
+  <!-- Navigation (universal — keep identical across all AgriBase pages) -->
   <nav class="nav">
     <div class="nav-inner">
-      <a class="brand" href="/farmers-community/">
+      <a class="brand" href="https://chinatsvi.github.io/farmers-community/">
         <span class="brand-icon"><img src="/favicon-256.png" alt="AgriBase icon"></span>
         <span>AgriBase</span>
       </a>
@@ -579,13 +580,13 @@
       </label>
 
       <div class="nav-links">
-        <a href="/farmers-community/">🏠 Home</a>
-        <a href="/planting/">🌱 Planting</a>
-        <a href="/weather/">🌦️ Weather</a>
-        <a href="/pests/">🐛 Pests</a>
-        <a href="/tools/">🧮 Calculators</a>
-        <a href="/market/">💰 Market</a>
-        <a href="/farmers-community/#features">📚 Knowledge</a>
+        <a href="https://chinatsvi.github.io/farmers-community/">🏠 Home</a>
+        <a href="https://chinatsvi.github.io/planting/">🌱 Planting</a>
+        <a href="https://chinatsvi.github.io/weather/">🌦️ Weather</a>
+        <a href="https://chinatsvi.github.io/pests/">🐛 Pests</a>
+        <a href="https://chinatsvi.github.io/agribase-farm-tools/" class="active">🧰 Farm Tools</a>
+        <a href="https://chinatsvi.github.io/market/">💰 Market</a>
+        <a href="https://chinatsvi.github.io/farmers-community/#features">📚 Knowledge</a>
       </div>
     </div>
   </nav>
@@ -593,7 +594,11 @@
   <!-- Page hero -->
   <header class="page-hero">
     <div class="page-hero-inner">
-      <div class="breadcrumb"><a href="/farmers-community/">AgriBase</a> / Farmer Tools</div>
+      <div class="breadcrumb">
+        <a href="https://chinatsvi.github.io/farmers-community/">AgriBase</a> /
+        <a href="https://chinatsvi.github.io/agribase-farm-tools/">Farm Tools</a> /
+        Farmer Tools
+      </div>
       <span class="page-hero-badge">🧮 Free Farm Calculators</span>
       <h1>AgriBase Farmer Tools</h1>
       <p class="lead">
@@ -902,7 +907,7 @@
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- Footer (universal — keep identical across all AgriBase pages) -->
   <footer>
     <svg class="footer-top-edge" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path fill="#1E2B18" d="M0,34 L40,18 L80,37 L120,10 L160,30 L200,6 L240,36 L280,14 L320,26 L360,8 L400,38 L440,20 L480,4 L520,32 L560,16 L600,28 L640,10 L680,36 L720,22 L760,6 L800,34 L840,12 L880,38 L920,18 L960,8 L1000,30 L1040,14 L1080,36 L1120,20 L1160,6 L1200,32 L1200,0 L0,0 Z"></path>
@@ -916,10 +921,10 @@
         <div class="footer-tagline">Connect. Learn. Farm Better.</div>
       </div>
       <div class="footer-links">
-        <a href="/farmer-community-Help-FAQ/" target="_blank" rel="noopener noreferrer">Help &amp; FAQ</a>
-        <a href="/farmer-community-privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-        <a href="/farmer-community-terms/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
-        <a href="/farmer-community-contact-us/" target="_blank" rel="noopener noreferrer">Contact Us</a>
+        <a href="https://chinatsvi.github.io/farmer-community-Help-FAQ/" target="_blank" rel="noopener noreferrer">Help &amp; FAQ</a>
+        <a href="https://chinatsvi.github.io/farmer-community-privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+        <a href="https://chinatsvi.github.io/farmer-community-terms/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+        <a href="https://chinatsvi.github.io/farmer-community-contact-us/" target="_blank" rel="noopener noreferrer">Contact Us</a>
       </div>
     </div>
     <div class="footer-bottom">© 2026 Farmer Community. All rights reserved.</div>
