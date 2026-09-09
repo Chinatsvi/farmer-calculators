@@ -644,9 +644,62 @@
       <div class="calc-card" id="fertilizer">
         <div class="calc-head">
           <div class="calc-icon">🧪</div>
-          <h2>Fertilizer Calculator</h2>
+          <h2>Fertilizer Recommendation</h2>
         </div>
-        <p class="calc-desc">Work out how much fertilizer to buy based on your field size and the recommended application rate.</p>
+        <p class="calc-desc">Location-aware agronomic nutrient &amp; fertilizer decision support, mirroring the recommendation logic used in the AgriBase app.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="fert-country">Country</label>
+            <select id="fert-country" onchange="fertCountryChanged()"></select>
+          </div>
+          <div class="field">
+            <label for="fert-region">Region</label>
+            <select id="fert-region"></select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="fert-district">District / County / Farm (optional)</label>
+            <input type="text" id="fert-district" placeholder="e.g. Masvingo">
+          </div>
+          <div class="field">
+            <label for="fert-category">Crop category</label>
+            <select id="fert-category" onchange="fertCategoryChanged()">
+              <option value="fieldCrop">Field Crops</option>
+              <option value="vegetable">Vegetables</option>
+              <option value="fruit">Fruit</option>
+              <option value="treePerennial">Tree / Perennial</option>
+              <option value="herbSpecialty">Herbs / Specialty</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="fert-crop">Crop</label>
+            <select id="fert-crop" onchange="fertCropChanged()"></select>
+          </div>
+          <div class="field">
+            <label for="fert-stage">Application stage</label>
+            <select id="fert-stage"></select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="fert-system">Production system</label>
+            <select id="fert-system">
+              <option>Rain-fed</option>
+              <option>Irrigated</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fert-yield">Target yield (optional)</label>
+            <input type="number" id="fert-yield" placeholder="Enter if required for your crop" min="0" step="any">
+          </div>
+        </div>
 
         <div class="field-row">
           <div class="field">
@@ -655,33 +708,57 @@
           </div>
           <div class="field">
             <label for="fert-unit">Unit</label>
-            <select id="fert-unit">
-              <option value="ha">Hectares</option>
-              <option value="acre">Acres</option>
-            </select>
+            <select id="fert-unit"></select>
           </div>
         </div>
 
         <div class="field-row">
-          <div class="field">
-            <label for="fert-rate">Application rate (kg per hectare)</label>
-            <input type="number" id="fert-rate" placeholder="e.g. 300" min="0" step="any">
-          </div>
-          <div class="field">
-            <label for="fert-bag">Bag size (kg, optional)</label>
-            <input type="number" id="fert-bag" placeholder="e.g. 50" min="0" step="any">
+          <div class="field" style="grid-column:1 / -1;">
+            <label>
+              <input type="checkbox" id="fert-has-soil" onchange="toggleSoilTest()" style="width:auto; margin-right:8px;">
+              I have soil test results
+            </label>
           </div>
         </div>
 
-        <button class="calc-button" onclick="calcFertilizer()">Calculate fertilizer needed</button>
+        <div id="fert-soil-fields" style="display:none;">
+          <div class="field-row">
+            <div class="field">
+              <label for="fert-ph">Soil pH</label>
+              <input type="number" id="fert-ph" placeholder="e.g. 6.2" step="0.1">
+            </div>
+            <div class="field">
+              <label for="fert-n">Soil N (ppm, optional)</label>
+              <input type="number" id="fert-n" placeholder="e.g. 20" step="any">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="fert-p">Soil P (ppm, optional)</label>
+              <input type="number" id="fert-p" placeholder="e.g. 15" step="any">
+            </div>
+            <div class="field">
+              <label for="fert-k">Soil K (ppm, optional)</label>
+              <input type="number" id="fert-k" placeholder="e.g. 120" step="any">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field" style="grid-column:1 / -1;">
+              <label for="fert-om">Organic matter (%) (optional)</label>
+              <input type="number" id="fert-om" placeholder="e.g. 3.0" step="0.1" min="0">
+            </div>
+          </div>
+        </div>
+
+        <button class="calc-button" onclick="calcFertilizer()">Calculate fertilizer recommendation</button>
 
         <div class="calc-result" id="fert-result">
-          <p class="result-label">You need</p>
-          <p class="result-value" id="fert-value">—</p>
-          <p class="result-sub" id="fert-sub"></p>
+          <p class="result-label">Recommendation</p>
+          <div id="fert-value" class="result-value">—</div>
+          <div id="fert-sub" class="result-sub"></div>
         </div>
 
-        <p class="calc-note">Application rates vary by crop, soil test results and fertilizer type — check your local extension recommendation for the exact rate to enter.</p>
+        <p class="calc-note">The web calculator follows the supplied AgriBase engine: field area is normalized to hectares; recommendations match crop + stage, then prefer region, country and finally GLOBAL rules. Soil adjustments are applied only when soil-test values are supplied.</p>
       </div>
     </div>
   </section>
@@ -944,38 +1021,272 @@
       return n.toLocaleString(undefined, { maximumFractionDigits: decimals, minimumFractionDigits: decimals });
     }
 
-    // ---- Fertilizer Calculator ----
-    function calcFertilizer() {
-      const size = parseFloat(document.getElementById('fert-size').value);
-      const unit = document.getElementById('fert-unit').value;
-      const rate = parseFloat(document.getElementById('fert-rate').value);
-      const bagSize = parseFloat(document.getElementById('fert-bag').value);
+    // ---- Fertilizer Recommendation Calculator ----
+    // Static browser mirror of the supplied AgriBase fertilizer seed/recommendation data.
+    // The app can also receive admin-managed data from Firestore; this standalone GitHub Pages
+    // version uses the supplied seed catalogue so it works without a backend configuration.
 
+    const FERT_COUNTRIES = [
+      {code:'ZW',name:'Zimbabwe',unit:'Hectares',regions:['Natural Regions I','Natural Region II','Natural Regions III','Natural Regions IV','Natural Regions V','Harare Metropolitan','Bulawayo Metropolitan','Manicaland','Mashonaland Central','Mashonaland East','Mashonaland West','Masvingo','Matabeleland North','Matabeleland South','Midlands']},
+      {code:'KE',name:'Kenya',unit:'Acres',regions:['Rift Valley','Western','Central Highlands','Eastern','Nyanza','Coast']},
+      {code:'ZA',name:'South Africa',unit:'Hectares',regions:['Highveld','Free State','Mpumalanga','Limpopo','KZN','Western Cape','Eastern Cape','North West','Northern Cape']},
+      {code:'BR',name:'Brazil',unit:'Hectares',regions:['Centro-Oeste / Cerrado','Sul','Sudeste','Nordeste / Matopiba','Norte']},
+      {code:'NG',name:'Nigeria',unit:'Hectares',regions:['North Central','North West','North East','South West','South East','South South']},
+      {code:'ZM',name:'Zambia',unit:'Hectares',regions:['Region I','Region IIa','Region IIb','Region III']},
+      {code:'GH',name:'Ghana',unit:'Acres',regions:['Forest','Transitional','Guinea Savanna','Sudan Savanna','Coastal Savanna']},
+      {code:'TZ',name:'Tanzania',unit:'Acres',regions:['Southern Highlands','Northern','Lake','Central','Coastal']},
+      {code:'ET',name:'Ethiopia',unit:'Hectares',regions:['Oromia Highlands','Amhara','SNNPR','Sidama','Tigray','Rift Valley Lowlands']},
+      {code:'UG',name:'Uganda',unit:'Acres',regions:['Central','Western','Eastern','Northern']},
+      {code:'US',name:'United States',unit:'Acres',regions:['Corn Belt / Midwest','Great Plains','Southeast','Delta','California Central Valley / West Coast','Northeast / Mid-Atlantic']},
+      {code:'IN',name:'India',unit:'Acres',regions:['Indo-Gangetic Plains','Deccan Plateau','Western Coastal / Gujarat','Eastern Coastal / West Bengal / Odisha','Southern Zone','Central Zone']}
+    ];
+
+    const FERT_CROPS = [
+      {id:'crop_maize',name:'Maize',category:'fieldCrop',stages:['Basal / Planting','Early Vegetative V4-V6','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_sorghum',name:'Sorghum',category:'fieldCrop',stages:['Basal / Planting','Early Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_pearl_millet',name:'Pearl Millet',category:'fieldCrop',stages:['Basal / Planting','Early Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_wheat',name:'Wheat',category:'fieldCrop',stages:['Basal / Planting','Early Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_barley',name:'Barley',category:'fieldCrop',stages:['Basal / Planting','Early Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_rice',name:'Rice',category:'fieldCrop',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_soybean',name:'Soybean',category:'fieldCrop',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_groundnuts',name:'Groundnuts',category:'fieldCrop',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_cotton',name:'Cotton',category:'fieldCrop',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_sunflower',name:'Sunflower',category:'fieldCrop',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_tobacco',name:'Tobacco',category:'fieldCrop',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_sugarcane',name:'Sugarcane',category:'fieldCrop',stages:['Planting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_cassava',name:'Cassava',category:'fieldCrop',stages:['Planting','Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_irish_potato',name:'Irish Potato',category:'fieldCrop',stages:['Planting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_sweet_potato',name:'Sweet Potato',category:'fieldCrop',stages:['Planting','Vegetative','All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_tomato',name:'Tomato',category:'vegetable',stages:['Basal / Transplanting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_cabbage',name:'Cabbage / Brassicas',category:'vegetable',stages:['Basal / Transplanting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_onion',name:'Onion / Garlic',category:'vegetable',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_pepper',name:'Bell Pepper / Chilli',category:'vegetable',stages:['Basal / Transplanting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_carrot',name:'Carrot / Root Crops',category:'vegetable',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_cucumber',name:'Cucumber / Squash',category:'vegetable',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_green_beans',name:'Green Beans',category:'vegetable',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_spinach',name:'Spinach / Chard',category:'vegetable',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_watermelon',name:'Watermelon / Melons',category:'vegetable',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_banana',name:'Banana / Plantain',category:'fruit',stages:['Annual / All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_avocado',name:'Avocado',category:'fruit',stages:['Establishment','Annual / All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_citrus',name:'Citrus',category:'fruit',stages:['Establishment','Annual / All Season Total'],systems:['Irrigated','Rain-fed']},
+      {id:'crop_mango',name:'Mango',category:'fruit',stages:['Establishment','Annual / All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_coffee',name:'Coffee',category:'treePerennial',stages:['Establishment','Annual / All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_macadamia',name:'Macadamia',category:'treePerennial',stages:['Establishment','Annual / All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_tea',name:'Tea',category:'treePerennial',stages:['Establishment','Annual / All Season Total'],systems:['Rain-fed','Irrigated']},
+      {id:'crop_basil',name:'Sweet Basil / Culinary Herbs',category:'herbSpecialty',stages:['Basal / Planting','Vegetative','All Season Total'],systems:['Irrigated','Rain-fed']}
+    ];
+
+    const FERT_PRODUCTS = {
+      'Compound D':{grade:'7-14-7+6S',packageSize:50},
+      'Compound C':{grade:'6-15-12+6S',packageSize:50},
+      'Compound S':{grade:'7-21-7+9S',packageSize:50},
+      'Compound J':{grade:'15-5-20+4S',packageSize:50},
+      'AN':{grade:'34.5% N',packageSize:50},
+      'Urea':{grade:'46-0-0',packageSize:50},
+      'DAP':{grade:'18-46-0',packageSize:50},
+      'MAP':{grade:'11-52-0',packageSize:50},
+      'CAN':{grade:'27-0-0+8Ca',packageSize:50},
+      'MOP':{grade:'0-0-60',packageSize:50},
+      'SOP':{grade:'0-0-50+18S',packageSize:50},
+      'NPK 17-17-17':{grade:'17-17-17',packageSize:50},
+      'NPK 15-15-15':{grade:'15-15-15',packageSize:50},
+      'NPK 05-25-15':{grade:'05-25-15',packageSize:50},
+      'NPK 20-00-20':{grade:'20-00-20',packageSize:50},
+      'Mavuno Planting':{grade:'10-26-10+micros',packageSize:50},
+      'Mavuno Topdress':{grade:'26-0-0+micros',packageSize:50},
+      '2:3:4 (30)+0.5% Zn':{grade:'2:3:4 (30)+0.5% Zn',packageSize:50},
+      'LAN 28%':{grade:'28% N',packageSize:50},
+      'NPK 10-10-10':{grade:'10-10-10',packageSize:22.68},
+      'UAN 32':{grade:'32% N',packageSize:50},
+      'Neem Urea':{grade:'46% N',packageSize:45},
+      'IFFCO NPK 10-26-26':{grade:'10-26-26',packageSize:45}
+    };
+
+    const FERT_RULES = [
+      {country:'ZW',region:'Natural Region II',crop:'crop_maize',stage:'Basal / Planting',N:28,P:56,K:28,S:24,Ca:0,Mg:0,product:'Compound D',min:350,max:450,rec:400,confidence:'Verified',source:'Zimbabwe DR&SS, 2022',method:'Basal application at planting'},
+      {country:'ZW',region:null,crop:'crop_maize',stage:'Early Vegetative V4-V6',N:103.5,P:0,K:0,S:0,Ca:0,Mg:0,product:'AN',min:250,max:350,rec:300,confidence:'Verified',source:'Zimbabwe DR&SS, 2022',method:'Topdress during V4-V6'},
+      {country:'ZW',region:null,crop:'crop_maize',stage:'All Season Total',N:131.5,P:56,K:28,S:24,Ca:0,Mg:0,product:'Compound D + AN',min:0,max:0,rec:700,confidence:'Verified',source:'Zimbabwe DR&SS, 2022',splits:[{product:'Compound D',stage:'Basal / Planting',pct:57,method:'Basal application at planting'},{product:'AN',stage:'Early Vegetative V4-V6',pct:43,method:'Topdress during V4-V6'}]},
+      {country:'BR',region:'Centro-Oeste / Cerrado',crop:'crop_maize',stage:'Basal / Planting',N:20,P:100,K:60,S:20,Ca:0,Mg:0,product:'NPK 05-25-15',min:350,max:450,rec:400,confidence:'Verified',source:'EMBRAPA Brazil, 2024',method:'Basal application at planting'},
+      {country:'BR',region:null,crop:'crop_maize',stage:'Early Vegetative V4-V6',N:120,P:0,K:60,S:0,Ca:0,Mg:0,product:'NPK 20-00-20',min:250,max:350,rec:300,confidence:'Verified',source:'EMBRAPA Brazil, 2024',method:'Topdress during V4-V6'},
+      {country:'KE',region:'Rift Valley',crop:'crop_maize',stage:'Basal / Planting',N:25,P:65,K:25,S:10,Ca:20,Mg:0,product:'Mavuno Planting',min:200,max:300,rec:250,confidence:'Verified',source:'KALRO Kenya, 2023',method:'Basal application at planting'},
+      {country:'KE',region:null,crop:'crop_maize',stage:'Early Vegetative V4-V6',N:65,P:0,K:0,S:0,Ca:0,Mg:0,product:'CAN',min:200,max:300,rec:250,confidence:'Verified',source:'KALRO Kenya, 2023',method:'Topdress during early vegetative growth'},
+      {country:'ZA',region:'Limpopo',crop:'crop_tomato',stage:'Basal / Transplanting',N:40,P:60,K:80,S:0,Ca:0,Mg:0,product:'2:3:4 (30)+0.5% Zn',min:500,max:700,rec:600,confidence:'Verified',source:'ARC South Africa, 2023',method:'Basal/transplanting application'},
+      {country:'US',region:null,crop:'crop_maize',stage:'All Season Total',N:180,P:70,K:90,S:0,Ca:0,Mg:0,product:'DAP + Potash + UAN 32',min:0,max:0,rec:450,confidence:'Verified',source:'USDA-NIFA / Land Grant Extension, 2023',splits:[{product:'DAP',stage:'Basal / Planting',pct:35,method:'Basal application'},{product:'UAN 32',stage:'All Season Total',pct:65,method:'Split nitrogen application'}]},
+      {country:'IN',region:null,crop:'crop_wheat',stage:'All Season Total',N:120,P:60,K:40,S:0,Ca:0,Mg:0,product:'DAP + Neem Urea + MOP',min:0,max:0,rec:350,confidence:'Verified',source:'ICAR India, 2023',splits:[{product:'DAP',stage:'Basal / Planting',pct:30,method:'Basal application'},{product:'Neem Urea',stage:'All Season Total',pct:55,method:'Split nitrogen application'},{product:'MOP',stage:'All Season Total',pct:15,method:'Potassium application'}]},
+      {country:'GLOBAL',region:null,crop:'crop_tomato',stage:'Basal / Transplanting',N:50,P:80,K:80,S:0,Ca:0,Mg:0,product:'NPK 17-17-17',min:400,max:550,rec:470,confidence:'Verified',source:'FAO global, 2023',method:'Basal application'},
+      {country:'GLOBAL',region:null,crop:'crop_cabbage',stage:'Basal / Transplanting',N:60,P:90,K:60,S:0,Ca:0,Mg:0,product:'NPK 15-15-15',min:450,max:600,rec:500,confidence:'Verified',source:'FAO global, 2023',method:'Basal application'},
+      {country:'GLOBAL',region:null,crop:'crop_onion',stage:'Basal / Planting',N:40,P:80,K:80,S:0,Ca:0,Mg:0,product:'NPK 17-17-17',min:400,max:500,rec:470,confidence:'Verified',source:'FAO global, 2023',method:'Basal application'},
+      {country:'GLOBAL',region:null,crop:'crop_banana',stage:'Annual / All Season Total',N:200,P:60,K:300,S:0,Ca:0,Mg:0,product:'NPK 17-17-17 + MOP',min:800,max:1200,rec:1000,confidence:'Verified',source:'FAO global, 2023',splits:[{product:'NPK 17-17-17',stage:'Annual / All Season Total',pct:70,method:'Apply in split doses'},{product:'MOP',stage:'Annual / All Season Total',pct:30,method:'Apply in split doses'}]}
+    ];
+
+    const ACRE_TO_HA_ENGINE = 0.40468564224;
+
+    function toHectaresEngine(area, unit) {
+      if (area <= 0) return 0;
+      const u = String(unit || '').toLowerCase().trim();
+      if (u === 'acres' || u === 'acre') return area * ACRE_TO_HA_ENGINE;
+      if (['square metres','square meters','sqm','m2','m²'].includes(u)) return area / 10000;
+      if (['square feet','sq ft','sqft','ft2','ft²'].includes(u)) return area * 0.000009290304;
+      return area;
+    }
+
+    function fertCountryChanged() {
+      const country = FERT_COUNTRIES.find(c => c.code === document.getElementById('fert-country').value) || FERT_COUNTRIES[0];
+      const region = document.getElementById('fert-region');
+      region.innerHTML = country.regions.map(r => `<option>${escapeHtml(r)}</option>`).join('');
+      document.getElementById('fert-unit').value = country.unit;
+      renderFertCrops();
+    }
+
+    function fertCategoryChanged() { renderFertCrops(); }
+
+    function renderFertCrops() {
+      const cat = document.getElementById('fert-category').value;
+      const cropSelect = document.getElementById('fert-crop');
+      const crops = FERT_CROPS.filter(c => c.category === cat);
+      cropSelect.innerHTML = crops.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+      fertCropChanged();
+    }
+
+    function fertCropChanged() {
+      const crop = FERT_CROPS.find(c => c.id === document.getElementById('fert-crop').value);
+      const stage = document.getElementById('fert-stage');
+      const system = document.getElementById('fert-system');
+      if (!crop) return;
+      stage.innerHTML = crop.stages.map(s => `<option>${escapeHtml(s)}</option>`).join('');
+      system.innerHTML = crop.systems.map(s => `<option>${escapeHtml(s)}</option>`).join('');
+    }
+
+    function toggleSoilTest() {
+      document.getElementById('fert-soil-fields').style.display = document.getElementById('fert-has-soil').checked ? 'block' : 'none';
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+    }
+
+    function firstMatchingRule(cropId, stage, countryCode, region) {
+      const stageLower = stage.toLowerCase();
+      const matches = FERT_RULES.filter(r => {
+        const cropMatches = r.crop === cropId;
+        const rStage = r.stage.toLowerCase();
+        const stageMatches = rStage === stageLower || rStage.includes(stageLower) || stageLower.includes(rStage);
+        return cropMatches && stageMatches;
+      });
+      if (!matches.length) return null;
+
+      const code = countryCode.toUpperCase();
+      const regionRule = matches.find(r => r.country === code && r.region &&
+        (r.region.toLowerCase().includes(region.toLowerCase()) || region.toLowerCase().includes(r.region.toLowerCase())));
+      if (regionRule) return regionRule;
+      const countryRule = matches.find(r => r.country === code);
+      if (countryRule) return countryRule;
+      return matches.find(r => r.country === 'GLOBAL') || null;
+    }
+
+    function calcFertilizer() {
+      const country = FERT_COUNTRIES.find(c => c.code === document.getElementById('fert-country').value) || FERT_COUNTRIES[0];
+      const region = document.getElementById('fert-region').value;
+      const district = document.getElementById('fert-district').value.trim();
+      const crop = FERT_CROPS.find(c => c.id === document.getElementById('fert-crop').value);
+      const stage = document.getElementById('fert-stage').value;
+      const productionSystem = document.getElementById('fert-system').value;
+      const fieldSize = parseFloat(document.getElementById('fert-size').value);
+      const fieldUnit = document.getElementById('fert-unit').value;
+      const targetYield = parseFloat(document.getElementById('fert-yield').value);
       const resultBox = document.getElementById('fert-result');
       const valueEl = document.getElementById('fert-value');
       const subEl = document.getElementById('fert-sub');
 
-      if (!size || size <= 0 || !rate || rate <= 0) {
-        valueEl.textContent = 'Please enter a valid field size and rate';
-        subEl.textContent = '';
+      if (!crop) { showFertError('Please select a crop.'); return; }
+      if (!stage) { showFertError('Please select an application stage.'); return; }
+      if (!fieldSize || fieldSize <= 0) { showFertError('Please enter a valid field size greater than zero.'); return; }
+
+      const hectares = toHectaresEngine(fieldSize, fieldUnit);
+      const location = [district, region, country.name].filter(Boolean).join(', ');
+      const rule = firstMatchingRule(crop.id, stage, country.code, region);
+
+      if (!rule) {
+        valueEl.textContent = 'No verified recommendation available';
+        subEl.textContent = `No verified recommendation for ${crop.name} at "${stage}" in ${location}. The AgriBase engine does not manufacture unverified rates.`;
         resultBox.classList.add('show');
         return;
       }
 
-      const sizeHa = toHectares(size, unit);
-      const totalKg = sizeHa * rate;
+      let nRate = rule.N || 0, pRate = rule.P || 0, kRate = rule.K || 0;
+      const sRate = rule.S || 0, caRate = rule.Ca || 0, mgRate = rule.Mg || 0;
+      const soilNotes = [];
+      const hasSoil = document.getElementById('fert-has-soil').checked;
+      if (hasSoil) {
+        const ph = parseFloat(document.getElementById('fert-ph').value);
+        const p = parseFloat(document.getElementById('fert-p').value);
+        const k = parseFloat(document.getElementById('fert-k').value);
+        const om = parseFloat(document.getElementById('fert-om').value);
 
-      valueEl.textContent = formatNumber(totalKg, 1) + ' kg';
-
-      let sub = `Based on ${formatNumber(sizeHa, 2)} ha at ${formatNumber(rate, 0)} kg/ha.`;
-      if (bagSize && bagSize > 0) {
-        const bags = totalKg / bagSize;
-        sub += ` That's about ${formatNumber(bags, 1)} bags of ${formatNumber(bagSize, 0)} kg.`;
+        if (!isNaN(ph)) {
+          if (ph < 5.2) soilNotes.push(`Soil pH ${ph.toFixed(1)} is low. Consider lime at 500–1000 kg/ha.`);
+          else if (ph > 7.8) soilNotes.push(`Soil pH ${ph.toFixed(1)} is high/alkaline or calcareous.`);
+        }
+        if (!isNaN(p)) {
+          if (p < 10) { pRate *= 1.25; soilNotes.push(`Soil P is Low (${p.toFixed(0)} ppm). P requirement increased by +25%.`); }
+          else if (p > 30) { pRate *= 0.65; soilNotes.push(`Soil P is High (${p.toFixed(0)} ppm). P requirement reduced by -35%.`); }
+        }
+        if (!isNaN(k)) {
+          if (k < 80) { kRate *= 1.25; soilNotes.push(`Exchangeable K is Low (${k.toFixed(0)} ppm). Potash requirement increased by +25%.`); }
+          else if (k > 220) { kRate *= 0.70; soilNotes.push(`Exchangeable K is High (${k.toFixed(0)} ppm). Potash requirement reduced by -30%.`); }
+        }
+        if (!isNaN(om) && om >= 3.5) { nRate = Math.max(0, nRate - 15); soilNotes.push(`High Organic Matter (${om.toFixed(1)}%). Mineral nitrogen credit of 15 kg N/ha applied.`); }
       }
-      subEl.textContent = sub;
 
+      const products = [];
+      if (rule.splits && rule.splits.length) {
+        rule.splits.forEach(split => {
+          const product = FERT_PRODUCTS[split.product] || {grade:'',packageSize:50};
+          const fraction = Math.min(1, Math.max(0.05, split.pct / 100));
+          const ratePerHa = rule.rec * fraction;
+          const totalKg = ratePerHa * hectares;
+          const exactBags = totalKg / product.packageSize;
+          products.push({name:split.product,grade:product.grade,stage:split.stage,rate:ratePerHa,total:totalKg,packageSize:product.packageSize,bags:Math.ceil(exactBags),exactBags,method:split.method});
+        });
+      } else {
+        const product = FERT_PRODUCTS[rule.product] || {grade:'',packageSize:50};
+        const totalKg = rule.rec * hectares;
+        const exactBags = totalKg / product.packageSize;
+        products.push({name:rule.product,grade:product.grade,stage:stage,rate:rule.rec,total:totalKg,packageSize:product.packageSize,bags:Math.ceil(exactBags),exactBags,method:rule.method});
+      }
+
+      const nutrientText = `N ${fmt(nRate,1)} · P₂O₅ ${fmt(pRate,1)} · K₂O ${fmt(kRate,1)} · S ${fmt(sRate,1)} · Ca ${fmt(caRate,1)} · Mg ${fmt(mgRate,1)} kg/ha`;
+      const productHtml = products.map(p => `<div style="margin-top:12px;"><strong>${escapeHtml(p.name)}</strong> <span>(${escapeHtml(p.grade)})</span><br>${fmt(p.total,1)} kg total · ${p.bags} bag${p.bags===1?'':'s'} of ${fmt(p.packageSize,2)} kg · ${fmt(p.rate,1)} kg/ha<br><span style="font-size:12px;">${escapeHtml(p.stage)} · ${escapeHtml(p.method)}</span></div>`).join('');
+      const soilHtml = soilNotes.length ? `<br><strong>Soil adjustment</strong><br>${soilNotes.map(escapeHtml).join('<br>')}` : '<br><strong>Soil adjustment</strong><br>No soil-test adjustment applied.';
+
+      valueEl.innerHTML = `${escapeHtml(rule.product)}<div style="font-family:var(--font-body);font-size:14px;font-weight:600;margin-top:8px;">${fmt(rule.rec,1)} kg/ha recommended rate</div>`;
+      subEl.innerHTML = `<strong>Location:</strong> ${escapeHtml(location)}<br><strong>Crop:</strong> ${escapeHtml(crop.name)} · <strong>Stage:</strong> ${escapeHtml(stage)} · <strong>System:</strong> ${escapeHtml(productionSystem)}<br><strong>Field:</strong> ${fmt(fieldSize,2)} ${escapeHtml(fieldUnit)} = ${fmt(hectares,4)} ha<br><strong>Nutrient targets:</strong> ${nutrientText}<br><strong>Recommended products:</strong>${productHtml}${soilHtml}<br><strong>Source:</strong> ${escapeHtml(rule.source)} · <strong>Confidence:</strong> ${escapeHtml(rule.confidence)}${!isNaN(targetYield) ? `<br><strong>Target yield entered:</strong> ${fmt(targetYield,2)}` : ''}<br><span style="font-size:12px;">This is decision support. Follow local extension guidance and your soil test before application.</span>`;
       resultBox.classList.add('show');
     }
+
+    function showFertError(message) {
+      const resultBox = document.getElementById('fert-result');
+      document.getElementById('fert-value').textContent = message;
+      document.getElementById('fert-sub').textContent = '';
+      resultBox.classList.add('show');
+    }
+
+    function fmt(n, decimals=0) {
+      return Number(n).toLocaleString(undefined,{maximumFractionDigits:decimals,minimumFractionDigits:decimals});
+    }
+
+    function initFertilizer() {
+      const countrySelect = document.getElementById('fert-country');
+      countrySelect.innerHTML = FERT_COUNTRIES.map(c => `<option value="${c.code}">${escapeHtml(c.name)}</option>`).join('');
+      countrySelect.value = 'ZW';
+      document.getElementById('fert-category').value = 'fieldCrop';
+      fertCountryChanged();
+      document.getElementById('fert-crop').value = 'crop_maize';
+      fertCropChanged();
+      document.getElementById('fert-stage').value = 'Basal / Planting';
+    }
+
+    initFertilizer();
 
     // ---- Plant Population Calculator ----
     function calcPopulation() {
